@@ -11,6 +11,9 @@ Config.ownerRestricted      = false -- Only allow vehicle owner to apply fake pl
 Config.restrictCommands     = true
 Config.allowMultipleFakes   = true
 
+-- Config Variables (Framework)
+Config.useESX               = false
+
 -- Config Variables (Debug)
 Debug                       = {}
 
