@@ -10,8 +10,7 @@ if Config.useMysqlAsync then
 end
 
 if Config.useGhmattimysql then
-    fetchScalar         = exports.ghmattimysql.execute 
-    -- Needs verification.
+    fetchScalar         = exports.ghmattimysql.scalar 
 end
 
 if Config.useESX then
