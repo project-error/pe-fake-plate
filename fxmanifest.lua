@@ -2,7 +2,7 @@ fx_version 'cerulean'
 
 game { 'gta5' }
 
-description 'Reanimation Weeb Plate'
+description 'Project Error Fake Plate'
 
 version '1.0.0'
 
