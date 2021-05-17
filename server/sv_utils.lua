@@ -39,14 +39,6 @@ Utils.randomLetter = function()
     return rLetter
 end
 
-AddEventHandler('onResourceStart', function(resourceName)
-	if resourceName == GetCurrentResourceName() then
-		local resourceName = "^4["..GetCurrentResourceName().."]^2"
-
-		Utils.Debug('success', " " .. resourceName .. " has started.^7")
-	end
-end)
-
 CreateThread(function()
 	local updatePath = '/project-error/new-fakeplate-who-dis'
 	local resourceName = "^5["..GetCurrentResourceName().."]^2"
