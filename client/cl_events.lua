@@ -1,4 +1,6 @@
-ESX = exports['es_extended']:getSharedObject()
+if Config.esxNotify then
+    ESX = exports['es_extended']:getSharedObject()
+end
 
 local inProgress = false
 
@@ -41,13 +43,11 @@ RegisterNetEvent('WP:setPlate', function(netId, originalPlate, fakePlate, plateT
                         end
                     end)
                 else
-                    RequestAnimDict(animDict)
-                    if not HasAnimDictLoaded(animDict) then
+                    RequestAnimDict("anim@amb@clubhouse@tutorial@bkr_tut_ig3@")
+                    if not HasAnimDictLoaded("anim@amb@clubhouse@tutorial@bkr_tut_ig3@") then
                         Wait(100)
                     end
-                    if Config.useESX then
-                        ESX.ShowNotification("Applying plate...")
-                    end
+                    TriggerEvent('NFPWD:notifySuccess', 'Applying plate...')
                     TaskPlayAnim(PlayerPedId(), "anim@amb@clubhouse@tutorial@bkr_tut_ig3@", "machinic_loop_mechandplayer", 1.0, 1.0, 8000, 1, 0, false, false, false)
                     Wait(7500)
                     if IsEntityPlayingAnim(PlayerPedId(), "anim@amb@clubhouse@tutorial@bkr_tut_ig3@", "machinic_loop_mechandplayer", 1) then
@@ -60,16 +60,12 @@ RegisterNetEvent('WP:setPlate', function(netId, originalPlate, fakePlate, plateT
                         end
                         inProgress = false
                     else
-                        if Config.useESX then
-                            ESX.ShowNotification("Animation was cancelled.")
-                        end
+                        TriggerEvent('NFPWD:notifyError', 'Animation was cancelled.')
                         inProgress = false
                     end
                 end
             else
-                if Config.useESX then
-                    ESX.ShowNotification("You\'re already doing this.")
-                end
+                TriggerEvent('NFPWD:notifyError', 'Action already in progress.')
             end
         else
             print("Triggered without args")
@@ -77,5 +73,73 @@ RegisterNetEvent('WP:setPlate', function(netId, originalPlate, fakePlate, plateT
         end
     else
         print("Tried to access invalid network ID")
+    end
+end)
+
+RegisterNetEvent('NFPWD:notifySuccess')
+AddEventHandler('NFPWD:notifySuccess', function(message)
+    length = Config.successLength * 1000
+    if Config.tNotify then 
+        exports['t-notify']:Alert({
+            style  =  'success',
+            message  =  "✔️ " .. message,
+            length = length
+        })
+    end
+    if Config.mythicNotify then
+        exports['mythic_notify']:SendAlert('success', "✔️ " .. message, length)
+    end
+    if Config.pNotify then
+        exports.pNotify:SetQueueMax(id, 1)
+        exports.pNotify:SendNotification({
+            text = "✔️ " .. message,
+            type = "success",
+            timeout = length,
+            layout = Config.layout,
+            theme = Config.theme,
+            queue = "id"
+        })
+    end
+    if Config.esxNotify then
+        ESX.ShowNotification(
+            "✔️ " .. message, 
+            false, 
+            false, 
+            140
+        )
+    end
+end)
+
+RegisterNetEvent('NFPWD:notifyError')
+AddEventHandler('NFPWD:notifyError', function(message)
+    length = Config.errorLength * 1000
+    if Config.tNotify then 
+        exports['t-notify']:Alert({
+            style  =  'error',
+            message  =  "❌ " .. message,
+            length = length
+        })
+    end
+    if Config.mythicNotify then
+        exports['mythic_notify']:SendAlert('error', "❌ " .. message, length)
+    end
+    if Config.pNotify then
+        exports.pNotify:SetQueueMax(id, 1)
+        exports.pNotify:SendNotification({
+            text = "❌ " .. message,
+            type = "error",
+            timeout = length,
+            layout = Config.layout,
+            theme = Config.theme,
+            queue = "id"
+        })
+    end
+    if Config.esxNotify then
+        ESX.ShowNotification(
+            "❌ " .. message, 
+            false, 
+            false, 
+            140
+        )
     end
 end)

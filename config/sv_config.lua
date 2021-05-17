@@ -1,18 +1,20 @@
 Config                      = {}
 
+Config.dropPlayer           = true -- Drops player if their client and server plates are not the same.
 -- Config Variables (Database)
 Config.useMysqlAsync        = true
 Config.useGhmattimysql      = false
 Config.Identifier           = 'license:'
 Config.databaseName         = 'ngwd_vehicles'
 
+-- Config Variables (Framework)
+Config.Standalone           = true
+Config.useESX               = false
+
 -- Config Variables (Plates)
 Config.ownerRestricted      = false -- Only allow vehicle owner to apply fake plate.
-Config.restrictCommands     = true
-Config.allowMultipleFakes   = true
-
--- Config Variables (Framework)
-Config.useESX               = false
+Config.restrictCommands     = false 
+Config.allowMultipleFakes   = false -- Lets players use fake plates more than once.
 
 -- Config Variables (Debug)
 Debug                       = {}
