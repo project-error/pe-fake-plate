@@ -1,3 +1,5 @@
+ESX = exports['es_extended']:getSharedObject()
+
 local inProgress = false
 
 RegisterNetEvent('WP:setPlate', function(netId, originalPlate, fakePlate, plateType)
@@ -41,9 +43,11 @@ RegisterNetEvent('WP:setPlate', function(netId, originalPlate, fakePlate, plateT
                 else
                     RequestAnimDict(animDict)
                     if not HasAnimDictLoaded(animDict) then
-                    Wait(100)
+                        Wait(100)
                     end
-                    TriggerEvent('WC:notify', "message", 7000, nil, "Applying plate")
+                    if Config.useESX then
+                        ESX.ShowNotification("Applying plate...")
+                    end
                     TaskPlayAnim(PlayerPedId(), "anim@amb@clubhouse@tutorial@bkr_tut_ig3@", "machinic_loop_mechandplayer", 1.0, 1.0, 8000, 1, 0, false, false, false)
                     Wait(7500)
                     if IsEntityPlayingAnim(PlayerPedId(), "anim@amb@clubhouse@tutorial@bkr_tut_ig3@", "machinic_loop_mechandplayer", 1) then
@@ -56,12 +60,16 @@ RegisterNetEvent('WP:setPlate', function(netId, originalPlate, fakePlate, plateT
                         end
                         inProgress = false
                     else
-                        TriggerEvent('WC:notify', "error", 1000, nil, "Animation was canceled.")
+                        if Config.useESX then
+                            ESX.ShowNotification("Animation was cancelled.")
+                        end
                         inProgress = false
                     end
                 end
             else
-                TriggerEvent('WC:notify', "error", 1000, nil, "You're already doing this!")
+                if Config.useESX then
+                    ESX.ShowNotification("You\'re already doing this.")
+                end
             end
         else
             print("Triggered without args")
