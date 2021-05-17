@@ -39,10 +39,14 @@ RegisterCommand('fakePlate', function(source, args)
                     elseif fakePlateActive and Config.allowMultipleFakes then
                         TriggerEvent('WP:getPlate', source, ped)
                     elseif fakePlateActive and not Config.allowMultipleFakes then
-                        player.showNotification("You have a fake plate already in use.")
+                        if Config.useESX then
+                            player.showNotification("You have a fake plate already in use.")
+                        end
                     end
                 else
-                    player.showNotification("Ownership required.")
+                    if Config.useESX then
+                        player.showNotification("Ownership required.")
+                    end
                 end
             end)
         end
@@ -52,7 +56,9 @@ RegisterCommand('fakePlate', function(source, args)
         elseif fakePlateActive and Config.allowMultipleFakes then
             TriggerEvent('WP:getPlate', source, ped)
         elseif fakePlateActive and not Config.allowMultipleFakes then
-            player.showNotification("You have a fake plate already in use.")
+            if Config.useESX then
+                player.showNotification("You have a fake plate already in use.")
+            end
         end
     end
 end, Config.restrictCommands)
@@ -72,13 +78,19 @@ RegisterCommand('returnPlate', function(source, args)
                 if currentDistance <= maxDistance then
                     TriggerClientEvent('WP:setPlate', playerId, netId, originalPlate, fakePlate, 'return')
                 else
-                    player.showNotification("Too far from vehicle.")
+                    if Config.useESX then
+                        player.showNotification("Too far from vehicle.")
+                    end
                 end
             else
-                player.showNotification("This plate doesn\'t belong to this vehicle.")
+                if Config.useESX then
+                    player.showNotification("This plate doesn\'t belong to this vehicle.")
+                end
             end
         else
-            player.showNotification("Vehicle already has this plate.")
+            if Config.useESX then
+                player.showNotification("Vehicle already has this plate.")
+            end
         end
     end
 end, Config.restrictCommands)
@@ -96,7 +108,9 @@ RegisterNetEvent('WP:getPlate', function(playerId, ped)
     if currentDistance <= maxDistance then
         TriggerClientEvent('WP:setPlate', playerId, originalNetId, originalPlate, fakePlate, 'fake')
     else
-        player.showNotification("Too far from vehicle.")
+        if Config.useESX then
+            player.showNotification("Too far from vehicle.")
+        end
     end
 end)
 
@@ -106,7 +120,9 @@ RegisterNetEvent('plateSuccess', function(cl_OriginalPlate, cl_FakePlate, plateT
     if cl_OriginalPlate == originalPlate and cl_FakePlate == fakePlate then
         if plateType == 'fake' then
             fakePlateActive = true
-            player.showNotification("Fake plate applied.")
+            if Config.useESX then
+                player.showNotification("Fake plate applied.")
+            end
             Utils.Debug('success', "^1[Fake]^2 Plate Applied.^7")
             Utils.Debug('success', "Vehicle plate set to: ^1["..cl_FakePlate.."]^7")
             ply.addInventoryItem("plate", 1)
@@ -116,7 +132,9 @@ RegisterNetEvent('plateSuccess', function(cl_OriginalPlate, cl_FakePlate, plateT
             originalPlate   = nil
             originalNetId   = nil
             fakePlate       = nil
-            ply.showNotification("Original plate applied.")
+            if Config.useESX then
+                ply.showNotification("Original plate applied.")
+            end
             Utils.Debug('success', "^5[Original]^2 Plate Applied.^7")
             Utils.Debug('success', "Vehicle plate set to: ^5["..cl_OriginalPlate.."]^7")
             ply.addInventoryItem("fakeplate", 1)
