@@ -2,7 +2,7 @@ fx_version 'cerulean'
 
 game { 'gta5' }
 
-description 'Reanimation Weeb Plate'
+description 'Project Error Fake Plate'
 
 version '1.0.0'
 
@@ -20,5 +20,6 @@ client_scripts {
 }
 
 dependencies { 
-	'mysql-async'
+	--'mysql-async', -- https://github.com/brouznouf/fivem-mysql-async
+	--'ghmattimysql', -- https://github.com/GHMatti/ghmattimysql
  }

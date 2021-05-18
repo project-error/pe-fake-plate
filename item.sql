@@ -1,0 +1,2 @@
+INSERT INTO `items` (`name`, `label`, `weight`, `rare`, `can_remove`,`price`) VALUES ('plate', 'Vehicle Plate', 1, 0, 1, 1);
+INSERT INTO `items` (`name`, `label`, `weight`, `rare`, `can_remove`,`price`) VALUES ('fakeplate', 'Fake Vehicle Plate', 1, 0, 1, 1);
