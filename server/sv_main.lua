@@ -1,6 +1,7 @@
 local originalPlate     = originalPlate
 local originalNetId     = originalNetId
 local fakePlate         = fakePlate
+local applyingPlate     = applyingPlate
 local fakePlateActive   = nil
 local maxDistance       = 4
 ESX                     = nil
@@ -15,6 +16,15 @@ end
 
 if Config.useESX then
     TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
+
+    ESX.RegisterUsableItem('plate', function(source)
+        local xPlayer = ESX.GetPlayerFromId(source)
+        TriggerEvent('pe-fake-plate:startReturnPlate', source)
+    end)
+    ESX.RegisterUsableItem('fakeplate', function(source)
+        local xPlayer = ESX.GetPlayerFromId(source)
+        TriggerEvent('pe-fake-plate:startFakePlate', source)
+    end)
 end
 
 if Config.Standalone then
@@ -46,7 +56,11 @@ RegisterNetEvent('pe-fake-plate:startFakePlate', function(source)
                     elseif fakePlateActive and Config.allowMultipleFakes then
                         TriggerEvent('pe-fake-plate:getPlate', source, ped)
                     elseif fakePlateActive and not Config.allowMultipleFakes then
-                        TriggerClientEvent('pe-fake-plate:notifyError', source, 'You have a fake plate already in use!')
+                        if DoesEntityExist(netVehicle) then
+                            TriggerClientEvent('pe-fake-plate:notifyError', source, 'You have a fake plate already in use!')
+                        else
+                            TriggerEvent('pe-fake-plate:getPlate', source, ped)
+                        end
                     end
                 else
                     TriggerClientEvent('pe-fake-plate:notifyError', source, 'Ownership Required!')
@@ -59,52 +73,74 @@ RegisterNetEvent('pe-fake-plate:startFakePlate', function(source)
         elseif fakePlateActive and Config.allowMultipleFakes then
             TriggerEvent('pe-fake-plate:getPlate', source, ped)
         elseif fakePlateActive and not Config.allowMultipleFakes then
-            TriggerClientEvent('pe-fake-plate:notifyError', source, 'You have a fake plate already in use!')
+            if DoesEntityExist(netVehicle) then
+                TriggerClientEvent('pe-fake-plate:notifyError', source, 'You have a fake plate already in use!')
+            else
+                TriggerEvent('pe-fake-plate:getPlate', source, ped)
+                Utils.Debug('inform', "Entity doesn't exist, allowing fake plate.") 
+            end
         end
     end
 end)
 
 RegisterNetEvent('pe-fake-plate:startReturnPlate', function(source)
-    local source            = source
-    if source > 0 then
-        local ped           = GetPlayerPed(source)
-        local netVehicle    = GetVehiclePedIsIn(ped, true)
-        local netId         = NetworkGetNetworkIdFromEntity(netVehicle)
-        local activePlate   = GetVehicleNumberPlateText(netVehicle)
-        if activePlate ~= originalPlate then
-            if netId == originalNetId then
-                local currentDistance = #(GetEntityCoords(ped) - GetEntityCoords(netVehicle))
-                if currentDistance <= maxDistance then
-                    TriggerClientEvent('pe-fake-plate:setPlate', source, netId, originalPlate, fakePlate, 'return')
-                else
-                    TriggerClientEvent('pe-fake-plate:notifyError', source, 'Vehicle is too far away!')
-                end
+    local source        = source
+    local ped           = GetPlayerPed(source)
+    local netVehicle    = GetVehiclePedIsIn(ped, true)
+    local netId         = NetworkGetNetworkIdFromEntity(netVehicle)
+    local activePlate   = GetVehicleNumberPlateText(netVehicle)
+    if activePlate ~= originalPlate then
+        if netId == originalNetId then
+            local currentDistance = #(GetEntityCoords(ped) - GetEntityCoords(netVehicle))
+            if currentDistance <= maxDistance then
+                TriggerClientEvent('pe-fake-plate:setPlate', source, netId, originalPlate, fakePlate, 'return')
             else
-                if fakePlateActive then
-                    TriggerClientEvent('pe-fake-plate:notifyError', source, "This plate doesn't belong to this vehicle!")
+                if DoesEntityExist(netVehicle) then
+                    TriggerClientEvent('pe-fake-plate:notifyError', source, 'Vehicle is too far away!')
                 else
-                    TriggerClientEvent('pe-fake-plate:notifyError', source, "No plate to change!")
+                    TriggerClientEvent('pe-fake-plate:notifyError', source, "No plate to change, vehicle doesn't exist!")
+                    resetStatus()
                 end
             end
         else
+            if fakePlateActive then
+                TriggerClientEvent('pe-fake-plate:notifyError', source, "This plate doesn't belong to this vehicle!")
+            else
+                TriggerClientEvent('pe-fake-plate:notifyError', source, "No plate to change, fake plate isn't active!")
+            end
+        end
+    else
+        if DoesEntityExist(netVehicle) then
             TriggerClientEvent('pe-fake-plate:notifyError', source, "Vehicle already has this plate!")
+        else
+            TriggerClientEvent('pe-fake-plate:notifyError', source, "No plate to change, vehicle doesn't exist!")
+            resetStatus() 
         end
     end
 end)
 
 RegisterNetEvent('pe-fake-plate:getPlate', function(source, ped)
-    local netVehicle    = GetVehiclePedIsIn(ped, true)
-    originalNetId       = NetworkGetNetworkIdFromEntity(netVehicle)
-    if not fakePlateActive then
-        originalPlate   = GetVehicleNumberPlateText(netVehicle)
-    end
-    fakePlate           = Utils.generatePlate(2)
+    if not applyingPlate then
+        local netVehicle    = GetVehiclePedIsIn(ped, true)
+        originalNetId       = NetworkGetNetworkIdFromEntity(netVehicle)
+        if not fakePlateActive then
+            originalPlate   = GetVehicleNumberPlateText(netVehicle)
+        end
+        fakePlate           = Utils.generatePlate(2)
 
-    local currentDistance = #(GetEntityCoords(ped) - GetEntityCoords(netVehicle))
-    if currentDistance <= maxDistance then
-        TriggerClientEvent('pe-fake-plate:setPlate', source, originalNetId, originalPlate, fakePlate, 'fake')
+        local currentDistance = #(GetEntityCoords(ped) - GetEntityCoords(netVehicle))
+        if currentDistance <= maxDistance then
+            TriggerClientEvent('pe-fake-plate:setPlate', source, originalNetId, originalPlate, fakePlate, 'fake')
+            applyingPlate = true
+        elseif netVehicle > 0 then
+            TriggerClientEvent('pe-fake-plate:notifyError', source, 'Vehicle is too far away!')
+        elseif netVehicle == 0 then
+            if GetVehiclePedIsIn(ped, false) == 0 then
+                TriggerClientEvent('pe-fake-plate:notifyError', source, 'You must enter a vehicle first!')
+            end
+        end
     else
-        TriggerClientEvent('pe-fake-plate:notifyError', source, 'Vehicle is too far away!')
+        TriggerClientEvent('pe-fake-plate:notifyError', source, "You're already applying a plate!.")
     end
 end)
 
@@ -117,6 +153,7 @@ RegisterNetEvent('plateSuccess', function(cl_OriginalPlate, cl_FakePlate, plateT
         if cl_OriginalPlate == originalPlate and cl_FakePlate == fakePlate then
             if plateType == 'fake' then
                 fakePlateActive = true
+                applyingPlate   = false
                 TriggerClientEvent('pe-fake-plate:notifySuccess', source, 'Fake plate applied!')
                 Utils.Debug('success', "^1[Fake]^2 Plate Applied.^7")
                 Utils.Debug('success', "Vehicle plate set to: ^1["..cl_FakePlate.."]^7")
@@ -125,20 +162,17 @@ RegisterNetEvent('plateSuccess', function(cl_OriginalPlate, cl_FakePlate, plateT
                     xPlayer.removeInventoryItem("fakeplate", 1)
                 end
             elseif plateType == 'return' then
-                fakePlateActive = false
-                originalPlate   = nil
-                originalNetId   = nil
-                fakePlate       = nil
+                resetStatus()
                 TriggerClientEvent('pe-fake-plate:notifySuccess', source, 'Original plate applied!')
                 Utils.Debug('success', "^5[Original]^2 Plate Applied.^7")
                 Utils.Debug('success', "Vehicle plate set to: ^5["..cl_OriginalPlate.."]^7")
                 if Config.useESX then
-                    xPlayer.addInventoryItem("fakeplate", 1)
                     xPlayer.removeInventoryItem("plate", 1)
                 end
             end
         else
             Utils.Debug('error', " "..GetPlayerName(source).." set a "..plateType.." that was different from the server plate.")
+            Utils.Debug('error', "Return Plate: "..cl_OriginalPlate.." Fake Plate: "..cl_FakePlate.."")
             if Config.dropPlayer then
                 DropPlayer(source, "Server check failed. Invalid vehicle plate. Please contact server staff.")
                 -- Add webhook since possible cheater.
@@ -147,13 +181,15 @@ RegisterNetEvent('plateSuccess', function(cl_OriginalPlate, cl_FakePlate, plateT
     end
 end)
 
-if Config.useESX then
-    ESX.RegisterUsableItem('plate', function(source)
-        local xPlayer = ESX.GetPlayerFromId(source)
-        TriggerEvent('pe-fake-plate:startReturnPlate', source)
-    end)
-    ESX.RegisterUsableItem('fakeplate', function(source)
-        local xPlayer = ESX.GetPlayerFromId(source)
-        TriggerEvent('pe-fake-plate:startFakePlate', source)
-    end)
+RegisterNetEvent('pe-fake-plate:disableBool', function()
+    applyingPlate = false
+end)
+
+function resetStatus()
+    fakePlateActive = false
+    applyingPlate   = false
+    originalPlate   = nil
+    originalNetId   = nil
+    fakePlate       = nil
+    Utils.Debug('inform', "Status was reset!") 
 end
