@@ -113,34 +113,36 @@ RegisterNetEvent('plateSuccess', function(cl_OriginalPlate, cl_FakePlate, plateT
     if Config.useESX then
         local xPlayer      = ESX.GetPlayerFromId(source)
     end
-    if cl_OriginalPlate == originalPlate and cl_FakePlate == fakePlate then
-        if plateType == 'fake' then
-            fakePlateActive = true
-            TriggerClientEvent('pe-fake-plate:notifySuccess', source, 'Fake plate applied!')
-            Utils.Debug('success', "^1[Fake]^2 Plate Applied.^7")
-            Utils.Debug('success', "Vehicle plate set to: ^1["..cl_FakePlate.."]^7")
-            if Config.useESX then
-                xPlayer.addInventoryItem("plate", 1)
-                xPlayer.removeInventoryItem("fakeplate", 1)
+    if originalPlate ~= nil and fakePlate ~= nil then
+        if cl_OriginalPlate == originalPlate and cl_FakePlate == fakePlate then
+            if plateType == 'fake' then
+                fakePlateActive = true
+                TriggerClientEvent('pe-fake-plate:notifySuccess', source, 'Fake plate applied!')
+                Utils.Debug('success', "^1[Fake]^2 Plate Applied.^7")
+                Utils.Debug('success', "Vehicle plate set to: ^1["..cl_FakePlate.."]^7")
+                if Config.useESX then
+                    xPlayer.addInventoryItem("plate", 1)
+                    xPlayer.removeInventoryItem("fakeplate", 1)
+                end
+            elseif plateType == 'return' then
+                fakePlateActive = false
+                originalPlate   = nil
+                originalNetId   = nil
+                fakePlate       = nil
+                TriggerClientEvent('pe-fake-plate:notifySuccess', source, 'Original plate applied!')
+                Utils.Debug('success', "^5[Original]^2 Plate Applied.^7")
+                Utils.Debug('success', "Vehicle plate set to: ^5["..cl_OriginalPlate.."]^7")
+                if Config.useESX then
+                    xPlayer.addInventoryItem("fakeplate", 1)
+                    xPlayer.removeInventoryItem("plate", 1)
+                end
             end
-        elseif plateType == 'return' then
-            fakePlateActive = false
-            originalPlate   = nil
-            originalNetId   = nil
-            fakePlate       = nil
-            TriggerClientEvent('pe-fake-plate:notifySuccess', source, 'Original plate applied!')
-            Utils.Debug('success', "^5[Original]^2 Plate Applied.^7")
-            Utils.Debug('success', "Vehicle plate set to: ^5["..cl_OriginalPlate.."]^7")
-            if Config.useESX then
-                xPlayer.addInventoryItem("fakeplate", 1)
-                xPlayer.removeInventoryItem("plate", 1)
+        else
+            Utils.Debug('error', " "..GetPlayerName(source).." set a "..plateType.." that was different from the server plate.")
+            if Config.dropPlayer then
+                DropPlayer(source, "Server check failed. Invalid vehicle plate. Please contact server staff.")
+                -- Add webhook since possible cheater.
             end
-        end
-    else
-        Utils.Debug('error', "The server plates is different from the client plates.")
-        if Config.dropPlayer then
-            DropPlayer(source, "Server check failed. Invalid vehicle plate. Please contact server staff.")
-            -- Add webhook since possible cheater.
         end
     end
 end)
