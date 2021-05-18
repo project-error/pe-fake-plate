@@ -4,7 +4,7 @@ end
 
 local inProgress = false
 
-RegisterNetEvent('NFPWD:setPlate', function(netId, originalPlate, fakePlate, plateType)
+RegisterNetEvent('pe-fake-plate:setPlate', function(netId, originalPlate, fakePlate, plateType)
     if NetworkDoesEntityExistWithNetworkId(netId) then
         local vehicle = NetToVeh(netId)
         if fakePlate ~= nil and originalPlate ~= nil then
@@ -47,7 +47,7 @@ RegisterNetEvent('NFPWD:setPlate', function(netId, originalPlate, fakePlate, pla
                     if not HasAnimDictLoaded("anim@amb@clubhouse@tutorial@bkr_tut_ig3@") then
                         Wait(100)
                     end
-                    TriggerEvent('NFPWD:notifySuccess', 'Applying plate...')
+                    TriggerEvent('pe-fake-plate:notifySuccess', 'Applying plate...')
                     TaskPlayAnim(PlayerPedId(), "anim@amb@clubhouse@tutorial@bkr_tut_ig3@", "machinic_loop_mechandplayer", 1.0, 1.0, 8000, 1, 0, false, false, false)
                     Wait(7500)
                     if IsEntityPlayingAnim(PlayerPedId(), "anim@amb@clubhouse@tutorial@bkr_tut_ig3@", "machinic_loop_mechandplayer", 1) then
@@ -60,12 +60,12 @@ RegisterNetEvent('NFPWD:setPlate', function(netId, originalPlate, fakePlate, pla
                         end
                         inProgress = false
                     else
-                        TriggerEvent('NFPWD:notifyError', 'Animation was cancelled.')
+                        TriggerEvent('pe-fake-plate:notifyError', 'Animation was cancelled.')
                         inProgress = false
                     end
                 end
             else
-                TriggerEvent('NFPWD:notifyError', 'Action already in progress.')
+                TriggerEvent('pe-fake-plate:notifyError', 'Action already in progress.')
             end
         else
             print("Triggered without args")
@@ -76,8 +76,8 @@ RegisterNetEvent('NFPWD:setPlate', function(netId, originalPlate, fakePlate, pla
     end
 end)
 
-RegisterNetEvent('NFPWD:notifySuccess')
-AddEventHandler('NFPWD:notifySuccess', function(message)
+RegisterNetEvent('pe-fake-plate:notifySuccess')
+AddEventHandler('pe-fake-plate:notifySuccess', function(message)
     length = Config.successLength * 1000
     if Config.tNotify then 
         exports['t-notify']:Alert({
@@ -110,8 +110,8 @@ AddEventHandler('NFPWD:notifySuccess', function(message)
     end
 end)
 
-RegisterNetEvent('NFPWD:notifyError')
-AddEventHandler('NFPWD:notifyError', function(message)
+RegisterNetEvent('pe-fake-plate:notifyError')
+AddEventHandler('pe-fake-plate:notifyError', function(message)
     length = Config.errorLength * 1000
     if Config.tNotify then 
         exports['t-notify']:Alert({

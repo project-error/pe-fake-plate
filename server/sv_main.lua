@@ -19,15 +19,15 @@ end
 
 if Config.Standalone then
     RegisterCommand('fakePlate', function(source, args) 
-        TriggerEvent('NFPWD:startFakePlate', source)
+        TriggerEvent('pe-fake-plate:startFakePlate', source)
     end, Config.restrictCommands)
 
     RegisterCommand('returnPlate', function(source, args) 
-       TriggerEvent('NFPWD:startReturnPlate', source)
+       TriggerEvent('pe-fake-plate:startReturnPlate', source)
     end, Config.restrictCommands)
 end
 
-RegisterNetEvent('NFPWD:startFakePlate', function(source)
+RegisterNetEvent('pe-fake-plate:startFakePlate', function(source)
     local source        = source
     local identifier    = Utils.getPlayerIdentifier(source)
     local ped           = GetPlayerPed(source)
@@ -42,29 +42,29 @@ RegisterNetEvent('NFPWD:startFakePlate', function(source)
                 if results then
                     Utils.Debug('inform', "Vehicle Owner")
                     if not fakePlateActive then
-                        TriggerEvent('NFPWD:getPlate', source, ped)
+                        TriggerEvent('pe-fake-plate:getPlate', source, ped)
                     elseif fakePlateActive and Config.allowMultipleFakes then
-                        TriggerEvent('NFPWD:getPlate', source, ped)
+                        TriggerEvent('pe-fake-plate:getPlate', source, ped)
                     elseif fakePlateActive and not Config.allowMultipleFakes then
-                        TriggerClientEvent('NFPWD:notifyError', source, 'You have a fake plate already in use!')
+                        TriggerClientEvent('pe-fake-plate:notifyError', source, 'You have a fake plate already in use!')
                     end
                 else
-                    TriggerClientEvent('NFPWD:notifyError', source, 'Ownership Required!')
+                    TriggerClientEvent('pe-fake-plate:notifyError', source, 'Ownership Required!')
                 end
             end)
         end
     else
         if not fakePlateActive then
-            TriggerEvent('NFPWD:getPlate', source, ped)
+            TriggerEvent('pe-fake-plate:getPlate', source, ped)
         elseif fakePlateActive and Config.allowMultipleFakes then
-            TriggerEvent('NFPWD:getPlate', source, ped)
+            TriggerEvent('pe-fake-plate:getPlate', source, ped)
         elseif fakePlateActive and not Config.allowMultipleFakes then
-            TriggerClientEvent('NFPWD:notifyError', source, 'You have a fake plate already in use!')
+            TriggerClientEvent('pe-fake-plate:notifyError', source, 'You have a fake plate already in use!')
         end
     end
 end)
 
-RegisterNetEvent('NFPWD:startReturnPlate', function(source)
+RegisterNetEvent('pe-fake-plate:startReturnPlate', function(source)
     local source            = source
     if source > 0 then
         local ped           = GetPlayerPed(source)
@@ -75,24 +75,24 @@ RegisterNetEvent('NFPWD:startReturnPlate', function(source)
             if netId == originalNetId then
                 local currentDistance = #(GetEntityCoords(ped) - GetEntityCoords(netVehicle))
                 if currentDistance <= maxDistance then
-                    TriggerClientEvent('NFPWD:setPlate', source, netId, originalPlate, fakePlate, 'return')
+                    TriggerClientEvent('pe-fake-plate:setPlate', source, netId, originalPlate, fakePlate, 'return')
                 else
-                    TriggerClientEvent('NFPWD:notifyError', source, 'Vehicle is too far away!')
+                    TriggerClientEvent('pe-fake-plate:notifyError', source, 'Vehicle is too far away!')
                 end
             else
                 if fakePlateActive then
-                    TriggerClientEvent('NFPWD:notifyError', source, "This plate doesn't belong to this vehicle!")
+                    TriggerClientEvent('pe-fake-plate:notifyError', source, "This plate doesn't belong to this vehicle!")
                 else
-                    TriggerClientEvent('NFPWD:notifyError', source, "No plate to change!")
+                    TriggerClientEvent('pe-fake-plate:notifyError', source, "No plate to change!")
                 end
             end
         else
-            TriggerClientEvent('NFPWD:notifyError', source, "Vehicle already has this plate!")
+            TriggerClientEvent('pe-fake-plate:notifyError', source, "Vehicle already has this plate!")
         end
     end
 end)
 
-RegisterNetEvent('NFPWD:getPlate', function(source, ped)
+RegisterNetEvent('pe-fake-plate:getPlate', function(source, ped)
     local netVehicle    = GetVehiclePedIsIn(ped, true)
     originalNetId       = NetworkGetNetworkIdFromEntity(netVehicle)
     if not fakePlateActive then
@@ -102,9 +102,9 @@ RegisterNetEvent('NFPWD:getPlate', function(source, ped)
 
     local currentDistance = #(GetEntityCoords(ped) - GetEntityCoords(netVehicle))
     if currentDistance <= maxDistance then
-        TriggerClientEvent('NFPWD:setPlate', source, originalNetId, originalPlate, fakePlate, 'fake')
+        TriggerClientEvent('pe-fake-plate:setPlate', source, originalNetId, originalPlate, fakePlate, 'fake')
     else
-        TriggerClientEvent('NFPWD:notifyError', source, 'Vehicle is too far away!')
+        TriggerClientEvent('pe-fake-plate:notifyError', source, 'Vehicle is too far away!')
     end
 end)
 
@@ -116,7 +116,7 @@ RegisterNetEvent('plateSuccess', function(cl_OriginalPlate, cl_FakePlate, plateT
     if cl_OriginalPlate == originalPlate and cl_FakePlate == fakePlate then
         if plateType == 'fake' then
             fakePlateActive = true
-            TriggerClientEvent('NFPWD:notifySuccess', source, 'Fake plate applied!')
+            TriggerClientEvent('pe-fake-plate:notifySuccess', source, 'Fake plate applied!')
             Utils.Debug('success', "^1[Fake]^2 Plate Applied.^7")
             Utils.Debug('success', "Vehicle plate set to: ^1["..cl_FakePlate.."]^7")
             if Config.useESX then
@@ -128,7 +128,7 @@ RegisterNetEvent('plateSuccess', function(cl_OriginalPlate, cl_FakePlate, plateT
             originalPlate   = nil
             originalNetId   = nil
             fakePlate       = nil
-            TriggerClientEvent('NFPWD:notifySuccess', source, 'Original plate applied!')
+            TriggerClientEvent('pe-fake-plate:notifySuccess', source, 'Original plate applied!')
             Utils.Debug('success', "^5[Original]^2 Plate Applied.^7")
             Utils.Debug('success', "Vehicle plate set to: ^5["..cl_OriginalPlate.."]^7")
             if Config.useESX then
@@ -148,10 +148,10 @@ end)
 if Config.useESX then
     ESX.RegisterUsableItem('plate', function(source)
         local xPlayer = ESX.GetPlayerFromId(source)
-        TriggerEvent('NFPWD:startReturnPlate', source)
+        TriggerEvent('pe-fake-plate:startReturnPlate', source)
     end)
     ESX.RegisterUsableItem('fakeplate', function(source)
         local xPlayer = ESX.GetPlayerFromId(source)
-        TriggerEvent('NFPWD:startFakePlate', source)
+        TriggerEvent('pe-fake-plate:startFakePlate', source)
     end)
 end

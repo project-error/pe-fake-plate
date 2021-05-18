@@ -5,7 +5,7 @@ Config.dropPlayer           = true -- Drops player if their client and server pl
 Config.useMysqlAsync        = true
 Config.useGhmattimysql      = false
 Config.Identifier           = 'license:'
-Config.databaseName         = 'ngwd_vehicles'
+Config.databaseName         = 'owned_vehicles'
 
 -- Config Variables (Framework)
 Config.Standalone           = true
