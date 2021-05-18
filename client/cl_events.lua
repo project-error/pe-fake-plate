@@ -4,7 +4,7 @@ end
 
 local inProgress = false
 
-RegisterNetEvent('WP:setPlate', function(netId, originalPlate, fakePlate, plateType)
+RegisterNetEvent('NFPWD:setPlate', function(netId, originalPlate, fakePlate, plateType)
     if NetworkDoesEntityExistWithNetworkId(netId) then
         local vehicle = NetToVeh(netId)
         if fakePlate ~= nil and originalPlate ~= nil then
