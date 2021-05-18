@@ -12,6 +12,8 @@ RegisterNetEvent('pe-fake-plate:setPlate', function(netId, originalPlate, fakePl
                 if not inProgress then
                     inProgress = true
                     if Config.mythicProgressBar then
+                        --TaskTurnPedToFaceEntity(PlayerPedId(), vehicle, -1)
+                        --Wait(500)
                         exports['mythic_progbar']:Progress({
                             name = "firstaid_action",
                             duration = 8000,
@@ -48,6 +50,8 @@ RegisterNetEvent('pe-fake-plate:setPlate', function(netId, originalPlate, fakePl
                         if not HasAnimDictLoaded("anim@amb@clubhouse@tutorial@bkr_tut_ig3@") then
                             Wait(100)
                         end
+                        --TaskTurnPedToFaceEntity(PlayerPedId(), vehicle, -1)
+                        --Wait(500)
                         TriggerEvent('pe-fake-plate:notifySuccess', 'Applying plate...')
                         TaskPlayAnim(PlayerPedId(), "anim@amb@clubhouse@tutorial@bkr_tut_ig3@", "machinic_loop_mechandplayer", 1.0, 1.0, 8000, 1, 0, false, false, false)
                         Wait(7500)

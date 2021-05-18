@@ -5,7 +5,7 @@ Config.successLength            = 2 -- Length of success Notification (Seconds)
 Config.errorLength              = 2 -- Length of error Notification (Seconds)
 
 -- Config Variables (Mythic Progress Bar)
-Config.mythicProgressBar        = false -- Will still trigger an animation and an alert if set to false.
+Config.mythicProgressBar        = true -- Will still trigger an animation and an alert if set to false.
 
 -- Config Variables (T-Notify)
 Config.tNotify                  = true

@@ -99,6 +99,7 @@ RegisterNetEvent('pe-fake-plate:startReturnPlate', function(source)
                     TriggerClientEvent('pe-fake-plate:notifyError', source, 'Vehicle is too far away!')
                 else
                     TriggerClientEvent('pe-fake-plate:notifyError', source, "No plate to change, vehicle doesn't exist!")
+                    -- The vehicle the return plate was assigned to doesn't exist.
                     resetStatus()
                 end
             end
@@ -114,6 +115,7 @@ RegisterNetEvent('pe-fake-plate:startReturnPlate', function(source)
             TriggerClientEvent('pe-fake-plate:notifyError', source, "Vehicle already has this plate!")
         else
             TriggerClientEvent('pe-fake-plate:notifyError', source, "No plate to change, vehicle doesn't exist!")
+            -- The vehicle the return plate was assigned to doesn't exist.
             resetStatus() 
         end
     end
@@ -162,6 +164,7 @@ RegisterNetEvent('plateSuccess', function(cl_OriginalPlate, cl_FakePlate, plateT
                     xPlayer.removeInventoryItem("fakeplate", 1)
                 end
             elseif plateType == 'return' then
+                -- Reset the bools since the return plate has been applied.
                 resetStatus()
                 TriggerClientEvent('pe-fake-plate:notifySuccess', source, 'Original plate applied!')
                 Utils.Debug('success', "^5[Original]^2 Plate Applied.^7")
