@@ -63,5 +63,5 @@ CreateThread(function()
 		end
 	end
 
-	PerformHttpRequest("https://raw.githubusercontent.com"..updatePath.."/dev/version", checkVersion, "GET")
+	PerformHttpRequest("https://raw.githubusercontent.com"..updatePath.."/main/version", checkVersion, "GET")
 end)

@@ -19,7 +19,7 @@ Config.allowMultipleFakes   = false -- Lets players use fake plates more than on
 -- Config Variables (Debug)
 Debug                       = {}
 
-Debug.debugLevel            = 3
+Debug.debugLevel            = 1
 --[[
     This sets the debug level which controls the prints you get in the console:
     0 - Disabled (Not Recomended)

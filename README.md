@@ -50,6 +50,12 @@ If using `Ghmattisql`, be sure to comment out `'@mysql-async/lib/MySQL.lua',` wi
 
 If you would like more supported please follow the same code style and PR it.
 
+# How it works
+
+- Player gets inside the vehicle they want to change and gets out.
+- Player does `/fakePlate` to apply the fake plate and `/returnPlate` to reset it back to the original plate.
+- If esx is being used then the player can use the item instead. **The config option has to be set to true first.**
+
 # Contributing
 
 Please make all pull request towards the [**Dev Branch**](https://github.com/project-error/new-fakeplate-who-dis/tree/dev). If you have any suggestions for improvements please contact `ROCKY_southpaw#6771` on **Discord** or in the [**Project Error Discord**](https://discord.gg/HYwBjTbAY5) or open an issue.
