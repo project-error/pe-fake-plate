@@ -15,7 +15,7 @@ RegisterNetEvent('pe-fake-plate:setPlate', function(netId, originalPlate, fakePl
                         --TaskTurnPedToFaceEntity(PlayerPedId(), vehicle, -1)
                         --Wait(500)
                         exports['mythic_progbar']:Progress({
-                            name = "firstaid_action",
+                            name = "plate_action",
                             duration = 8000,
                             label = "Changing plate...",
                             useWhileDead = false,

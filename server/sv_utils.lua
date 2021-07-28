@@ -50,7 +50,7 @@ CreateThread(function()
 		elseif curVersion ~= responseText and tonumber(curVersion) < tonumber(responseText) then
             print("\n^1###############################")
 			print("\n" ..resourceName.." is outdated.")
-            print("\nThe latest stable version is "..responseText..", your version is ("..curVersion..")\n\nPlease download the latest stable build from https://github.com/project-error/new-fakeplate-who-dis")
+            print("\nThe latest stable version is "..responseText..", your version is ("..curVersion..")\n\nPlease download the latest stable build from https://github.com/project-error/pe-fake-plate")
 			print("\n^1###############################")
 		elseif(tonumber(curVersion) > tonumber(responseText)) then
 			Utils.Debug("inform","You may be using a pre-release of ^8["..GetCurrentResourceName().."]^5 or the GitHub went offline.")
