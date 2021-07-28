@@ -18,11 +18,13 @@ if Config.useESX then
     TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 
     ESX.RegisterUsableItem('plate', function(source)
-        local xPlayer = ESX.GetPlayerFromId(source)
+        -- If any issues, make xPlayer a local variable.
+        xPlayer = ESX.GetPlayerFromId(source)
         TriggerEvent('pe-fake-plate:startReturnPlate', source)
     end)
     ESX.RegisterUsableItem('fakeplate', function(source)
-        local xPlayer = ESX.GetPlayerFromId(source)
+        -- If any issues, make xPlayer a local variable.
+        xPlayer = ESX.GetPlayerFromId(source)
         TriggerEvent('pe-fake-plate:startFakePlate', source)
     end)
 end
