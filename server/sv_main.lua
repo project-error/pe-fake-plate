@@ -19,12 +19,10 @@ if Config.useESX then
 
     ESX.RegisterUsableItem('plate', function(source)
         -- If any issues, make xPlayer a local variable.
-        xPlayer = ESX.GetPlayerFromId(source)
         TriggerEvent('pe-fake-plate:startReturnPlate', source)
     end)
     ESX.RegisterUsableItem('fakeplate', function(source)
         -- If any issues, make xPlayer a local variable.
-        xPlayer = ESX.GetPlayerFromId(source)
         TriggerEvent('pe-fake-plate:startFakePlate', source)
     end)
 end
@@ -149,10 +147,9 @@ RegisterNetEvent('pe-fake-plate:getPlate', function(source, ped)
 end)
 
 RegisterNetEvent('plateSuccess', function(cl_OriginalPlate, cl_FakePlate, plateType)
-    local source   = source
-    if Config.useESX then
-        xPlayer      = ESX.GetPlayerFromId(source)
-    end
+    local source = source
+    local xPlayer = Config.useEsx and ESX.GetPlayerFromId(source)
+  
     if originalPlate ~= nil and fakePlate ~= nil then
         if cl_OriginalPlate == originalPlate and cl_FakePlate == fakePlate then
             if plateType == 'fake' then
