@@ -151,7 +151,7 @@ end)
 RegisterNetEvent('plateSuccess', function(cl_OriginalPlate, cl_FakePlate, plateType)
     local source   = source
     if Config.useESX then
-        local xPlayer      = ESX.GetPlayerFromId(source)
+        xPlayer      = ESX.GetPlayerFromId(source)
     end
     if originalPlate ~= nil and fakePlate ~= nil then
         if cl_OriginalPlate == originalPlate and cl_FakePlate == fakePlate then
